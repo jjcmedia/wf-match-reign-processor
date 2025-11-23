@@ -1,0 +1,1 @@
+node_modules/ vendor/ .env .DS_Store *.log *.sql *.zip .idea/ .vscode/ wp-config.php /.cache/
