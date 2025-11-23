@@ -1,0 +1,390 @@
+/*
+  includes/assets/css/shortcodes.css
+  Canonical stylesheet for WF Match Reign Processor
+  - Contains match-listing table styles (wfmc-*)
+  - Contains fully-scoped superstar dashboard styles (.wf-superstar-record)
+  - Designed to avoid style bleed: dashboard rules are strictly prefixed
+  - Responsive, accessible, reduced-motion friendly
+  Version: 2025-11-23
+*/
+
+/* ======================================================================
+   GLOBAL VARIABLES
+   ====================================================================== */
+:root{
+  --wf-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --wf-font-size: 15px;
+  --wf-row-bg: #0f1113;            /* dark row background for match rows */
+  --wf-card-bg-1: linear-gradient(180deg,#0f0f10 0%, #141416 100%); /* dashboard cards */
+  --wf-row-text: #eef2f5;
+  --wf-row-subtle: #9aa3ab;
+  --wf-accent: #ffd54f;
+  --wf-accent-2: #ffb86b;
+  --wf-muted: #7f8b92;
+  --wf-table-radius: 10px;
+  --wf-table-gap: 14px;
+  --wf-margin: 16px;
+  --wf-promo-w: 100px;
+  --wf-promo-h: 50px;
+  --wf-pill-radius: 10px;
+  --wf-card-radius: 12px;
+  --wf-shadow: 0 12px 38px rgba(2,6,23,0.55);
+}
+
+/* ======================================================================
+   MATCH LISTING TABLE (wfmc-*)
+   Keep these rules explicit and high-specificity so other components can't
+   unintentionally override table visuals.
+   ====================================================================== */
+
+/* Top-level table wrapper */
+table.wfmc-table,
+.wfmc-table {
+  width: 100%;
+  border-collapse: separate;                    /* allow border-spacing for gaps */
+  border-spacing: 0 var(--wf-table-gap);
+  font-size: var(--wf-font-size);
+  font-family: var(--wf-font-family);
+  box-sizing: border-box;
+  margin: var(--wf-margin);
+  max-width: calc(100% - (var(--wf-margin) * 2));
+  padding: 0;
+  background: transparent;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Default cell styles */
+table.wfmc-table td,
+.wfmc-table td {
+  padding: 0.85rem 0.85rem;
+  vertical-align: middle;
+  box-sizing: border-box;
+  background: transparent;
+  color: var(--wf-row-text);
+}
+
+/* Column helpers */
+.wfmc-col-date { width: 110px; padding-left: 0.8rem; white-space: nowrap; color: var(--wf-row-subtle); font-size: 0.95em; }
+.wfmc-col-promo { width: var(--wf-promo-w); text-align: center; padding-right: 0.6rem; }
+.wfmc-col-main { }
+
+/* Row card visuals applied to TDs so radii are preserved */
+.wfmc-row td,
+table.wfmc-table tr.wfmc-row td {
+  background: var(--wf-row-bg);
+  color: var(--wf-row-text);
+  border-top: 1px solid rgba(51,51,51,0.9);
+  border-bottom: 1px solid rgba(51,51,51,0.9);
+  border-left: none;
+  border-right: none;
+  position: relative;
+  z-index: 1;
+  padding: 0.85rem 0.85rem;
+}
+
+/* Outer vertical borders and corner radii on first/last cells */
+.wfmc-row td:first-child,
+table.wfmc-table tr.wfmc-row td:first-child {
+  border-left: 1px solid #333;
+  border-top-left-radius: var(--wf-table-radius);
+  border-bottom-left-radius: var(--wf-table-radius);
+  padding-left: 1.1rem;
+}
+.wfmc-row td:last-child,
+table.wfmc-table tr.wfmc-row td:last-child {
+  border-right: 1px solid #333;
+  border-top-right-radius: var(--wf-table-radius);
+  border-bottom-right-radius: var(--wf-table-radius);
+  padding-right: 1.1rem;
+}
+
+/* Subtle shadow across the row using pseudo on first cell */
+.wfmc-row td:first-child::before,
+table.wfmc-table tr.wfmc-row td:first-child::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: calc(-6px - 0.0px);
+  bottom: -6px;
+  border-radius: calc(var(--wf-table-radius) + 6px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+  pointer-events: none;
+  z-index: 0;
+}
+.wfmc-row td:last-child::after,
+table.wfmc-table tr.wfmc-row td:last-child::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 6px;
+  bottom: -6px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Hover lift for the row */
+.wfmc-row:hover td,
+table.wfmc-table tr.wfmc-row:hover td {
+  transform: translateY(-3px);
+}
+
+/* Remove table-level borders */
+.wfmc-table, .wfmc-table tbody, .wfmc-table thead, .wfmc-table tfoot {
+  border: none;
+}
+
+/* Promo image sizing */
+.wfmc-promo-img,
+img.wfmc-promo-img,
+img.wf_match_event_image {
+  width: var(--wf-promo-w) !important;
+  height: var(--wf-promo-h) !important;
+  max-width: none !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Inline wrappers and participant styles */
+.wfmc-first-line { display: block; margin-bottom: 0.25rem; line-height: 1.12; font-size: var(--wf-font-size); }
+.wfmc-matchcard { display: inline-block !important; white-space: normal; font-weight: 700; color: var(--wf-row-text); }
+.wfmc-match-type { display: inline !important; white-space: nowrap !important; font-weight: 700; color: var(--wf-row-text); }
+.wfmc-participants-inline { display: inline !important; white-space: normal !important; margin-left: 0.2rem; color: #f0f0f0; }
+.wfmc-participant, .wfmc-participant-link {
+  display: inline !important;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  color: #f0f0f0;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+}
+.wfmc-participant-winner { color: var(--wf-accent); text-shadow: 0 2px 10px rgba(255,213,79,0.06); }
+.wfmc-vs, .wfmc-def { margin: 0 0.35rem; color: var(--wf-row-subtle); font-weight:600; }
+.wfmc-match-time, .wfmc-match-result { margin-left: 0.35rem; color: var(--wf-row-subtle); font-size:0.95em; white-space:nowrap; }
+.wfmc-champ { margin-right:5px; font-weight:700; color:var(--wf-row-text); }
+.wfmc-eventline { display:block; font-size:0.78rem; font-weight:300; margin-top:0.25rem; color:var(--wf-row-subtle); }
+.wfmc-incoming-champ { margin-left: 0.35rem; font-weight:700; color:var(--wf-accent); }
+.wfmc-table a { color: inherit; text-decoration: none; }
+
+/* Table responsive */
+@media (max-width:920px) {
+  .wfmc-table td { padding: 0.7rem 0.6rem; }
+  .wfmc-first-line { margin-bottom: 0.3rem; }
+}
+@media (max-width:540px) {
+  .wfmc-table { border-spacing: 0 12px; margin: 12px; max-width: calc(100% - 24px); }
+  .wfmc-table td { display:block; width:100%; padding:0.8rem; box-sizing:border-box; }
+  .wfmc-first-line { margin-bottom:0.55rem; }
+  .wfmc-eventline { margin-top:0.45rem; font-size:0.95em; }
+  .wfmc-col-date { width:auto; padding-left:0.4rem; color:var(--wf-row-subtle); }
+  .wfmc-col-promo { width:auto; padding-right:0.4rem; text-align:left; }
+  .wfmc-row td:first-child, .wfmc-row td:last-child { border-radius: 6px; }
+}
+
+/* ======================================================================
+   SUPERSTAR DASHBOARD (strictly scoped)
+   All rules here are prefixed with .wf-superstar-record to avoid bleed.
+   ====================================================================== */
+
+.wf-superstar-record { font-family: var(--wf-font-family); color: var(--wf-row-text); }
+
+/* Dashboard outer shell */
+.wf-superstar-record .wf-record-dashboard {
+  display: grid;
+  grid-template-columns: 260px 1fr 280px;
+  gap: 16px;
+  background: linear-gradient(180deg, rgba(20,21,24,0.98), rgba(14,15,18,0.98));
+  border-radius: var(--wf-card-radius);
+  padding: 18px;
+  box-shadow: var(--wf-shadow);
+  border: 1px solid rgba(255,255,255,0.03);
+  overflow: hidden;
+}
+
+/* Responsive stack */
+@media (max-width: 980px) {
+  .wf-superstar-record .wf-record-dashboard { grid-template-columns: 1fr; }
+}
+
+/* LEFT - profile */
+.wf-superstar-record .wf-record-profile {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 10px;
+  padding: 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  text-align:center;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+.wf-superstar-record .wf-profile-photo {
+  width:120px; height:120px; border-radius:10px; overflow:hidden;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+  display:inline-block; box-shadow: 0 8px 20px rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.03);
+}
+.wf-superstar-record .wf-profile-photo img { width:100%; height:100%; object-fit:cover; display:block; }
+.wf-superstar-record .wf-profile-name { font-weight:800; font-size:1.05rem; color:#fff; margin-top:4px; }
+.wf-superstar-record .wf-profile-role { font-size:0.92rem; color:var(--wf-row-subtle); margin-top:2px; }
+
+/* KPIs badge row */
+.wf-superstar-record .wf-profile-kpis {
+  display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:8px;
+}
+.wf-superstar-record .wf-kpi {
+  background: rgba(255,255,255,0.02); padding:6px 10px; border-radius:999px; font-size:0.82rem;
+  color: var(--wf-row-text); border:1px solid rgba(255,255,255,0.02);
+}
+.wf-superstar-record .wf-kpi--big { font-weight:900; font-size:1.05rem; padding:8px 12px; }
+
+/* CENTER - stats & recent matches */
+.wf-superstar-record .wf-record-main { display:flex; flex-direction:column; gap:12px; min-width:0; }
+
+/* Stat pills */
+.wf-superstar-record .wf-record-stats { display:flex; gap:10px; align-items:stretch; flex-wrap:wrap; }
+.wf-superstar-record .wf-pill {
+  flex: 1 1 140px; min-width:120px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: var(--wf-pill-radius);
+  padding:10px 12px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border:1px solid rgba(255,255,255,0.02); box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}
+.wf-superstar-record .wf-pill__value { font-weight:900; font-size:1.18rem; color:#fff; }
+.wf-superstar-record .wf-pill__label { font-size:0.78rem; color:var(--wf-row-subtle); margin-top:6px; }
+
+/* Pill color variants */
+.wf-superstar-record .wf-pill--accent { background: linear-gradient(180deg, rgba(255,213,79,0.12), rgba(255,180,80,0.06)); border-color: rgba(255,213,79,0.08); }
+.wf-superstar-record .wf-pill--win { background: linear-gradient(180deg, rgba(34,192,122,0.12), rgba(19,130,78,0.06)); }
+.wf-superstar-record .wf-pill--loss { background: linear-gradient(180deg, rgba(207,63,63,0.12), rgba(139,31,31,0.06)); }
+
+/* Recent matches block (reusing chart block visuals) */
+.wf-superstar-record .wf-record-chart {
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+  border-radius: 10px;
+  border:1px solid rgba(255,255,255,0.02);
+  padding: 12px;
+  min-height: 120px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.wf-superstar-record .wf-chart-title { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; }
+.wf-superstar-record .wf-chart-title h4 { margin:0; font-size:0.95rem; color:#fff; font-weight:800; }
+.wf-superstar-record .wf-recent-list { display:flex; flex-direction:column; gap:8px; }
+
+/* Recent match row */
+.wf-superstar-record .wf-recent-list .wf-recent-item {
+  display:flex; justify-content:space-between; align-items:center;
+  background: rgba(255,255,255,0.015); padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.02);
+}
+.wf-superstar-record .wf-recent-item .opponents { font-weight:700; color:#fff; }
+.wf-superstar-record .wf-recent-item .date { font-size:0.85rem; color:var(--wf-row-subtle); margin-top:4px; }
+.wf-superstar-record .wf-recent-item .result { font-weight:800; }
+
+/* Sparkline canvas */
+.wf-superstar-record canvas.wf-chart { width:100%; height:80px; display:block; border-radius:8px; background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent); }
+
+/* RIGHT - side details */
+.wf-superstar-record .wf-record-side { display:flex; flex-direction:column; gap:12px; min-width:0; }
+.wf-superstar-record .wf-match-meta {
+  background: rgba(255,255,255,0.02); border-radius:10px; padding:10px; border:1px solid rgba(255,255,255,0.02);
+}
+.wf-superstar-record .wf-match-meta .label { color:var(--wf-row-subtle); font-size:0.82rem; }
+.wf-superstar-record .wf-match-meta .value { font-weight:800; font-size:1.02rem; margin-top:6px; color:#fff; }
+
+/* Side stats listing */
+.wf-superstar-record .wf-side-stats {
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), transparent); border-radius:10px; padding:10px; border:1px solid rgba(255,255,255,0.02);
+}
+.wf-superstar-record .wf-side-stats .row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed rgba(255,255,255,0.02); }
+.wf-superstar-record .wf-side-stats .row:last-child { border-bottom:none; }
+.wf-superstar-record .wf-side-stats .row .k { color:var(--wf-row-subtle); font-size:0.85rem; }
+.wf-superstar-record .wf-side-stats .row .v { font-weight:800; color:#fff; }
+
+/* Picks / feuds area */
+.wf-superstar-record .wf-picks { background: rgba(255,255,255,0.015); border-radius:10px; padding:10px; border:1px solid rgba(255,255,255,0.02); }
+.wf-superstar-record .wf-picks .label { font-weight:700; margin-bottom:6px; }
+
+/* Hover and interaction */
+.wf-superstar-record .wf-record-dashboard:hover { transform: none; }
+.wf-superstar-record .wf-record-card:hover { transform: translateY(-6px); box-shadow: 0 18px 48px rgba(2,6,23,0.66); }
+
+/* Small screens */
+@media (max-width: 860px) {
+  .wf-superstar-record .wf-pill { flex-basis: 45%; }
+  .wf-superstar-record .wf-record-chart { min-height: 160px; }
+  .wf-superstar-record .wf-record-dashboard { padding: 12px; gap: 12px; }
+}
+@media (max-width: 520px) {
+  .wf-superstar-record .wf-pill { flex-basis: 48%; min-width:0; }
+  .wf-superstar-record .wf-record-dashboard { padding:12px; gap:10px; }
+  .wf-superstar-record .wf-chart-canvas { height:120px; }
+  .wf-superstar-record .wf-recent-item { flex-direction: column; align-items:flex-start; gap:6px; }
+}
+
+/* ======================================================================
+   Helper: editor preview scope (GenerateBlocks / Gutenberg)
+   Enqueueing this file into the block editor will make the editor preview match.
+   ====================================================================== */
+
+/* Limit any editor-specific overrides under this scope so they don't leak to other admin pages */
+.editor-styles-wrapper .wf-superstar-record { /* no-op but keeps editor specificity available */ }
+
+/* ======================================================================
+   Accessibility & reduced motion
+   ====================================================================== */
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .wfmc-row:hover td,
+  .wf-record-card:hover,
+  .wf-superstar-record .wf-record-dashboard,
+  .wf-superstar-record .wf-pill {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* High contrast adjustments */
+@media (prefers-contrast: high) {
+  .wf-superstar-record .wf-record-dashboard { border-color: rgba(255,255,255,0.08); }
+  .wf-superstar-record .wf-pill__value { color: #fff; }
+}
+
+/* ======================================================================
+   Utility classes (small helpers that may be used in markup)
+   ====================================================================== */
+.wf-hidden { display:none !important; }
+.wf-muted { color: var(--wf-muted) !important; }
+.wf-accent { color: var(--wf-accent) !important; }
+
+/* Reign list styles (namespace separate from match-list to avoid accidental overwrite) */
+.wf-reign-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.wf-reign-row {
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+  border-radius:8px;
+  padding:10px;
+  border:1px solid rgba(255,255,255,0.02);
+}
+.wf-reign-thumb { flex:0 0 auto; width:120px; height:80px; overflow:hidden; border-radius:6px; display:block; }
+.wf-reign-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.wf-reign-main { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; }
+.wf-reign-meta { color:var(--wf-row-subtle); font-size:0.95rem; }
+.wf-reign-excerpt { color:var(--wf-row-subtle); font-size:0.92rem; margin-top:6px; }
+
+/* Responsive fallback */
+@media (max-width: 980px) {
+  .wf-reign-row { flex-direction:row; gap:10px; }
+  .wf-reign-thumb { width:100px; height:66px; }
+}
+
+
