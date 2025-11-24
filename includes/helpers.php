@@ -335,3 +335,30 @@ if ( ! function_exists( 'wf_get_championship_image_html' ) ) {
 		return '';
 	}
 }
+
+/**
+ * Shared helper: return CSS class(es) used for alternating/list row visuals.
+ *
+ * $index: zero-based row index
+ * $context: optional context string (e.g. 'match' or 'reigns')
+ *
+ * Using this helper ensures match listing and reign listing use identical classes.
+ */
+if ( ! function_exists( 'wf_get_row_class' ) ) {
+	function wf_get_row_class( $index = 0, $context = '' ) {
+		$classes = array();
+
+		// alternating parity classes (keeps behaviour consistent)
+		$classes[] = ( ( $index % 2 ) === 0 ) ? 'wf-row-even' : 'wf-row-odd';
+
+		// shared base class name for list rows
+		$classes[] = 'wf-list-row';
+
+		// optional context modifier
+		if ( $context ) {
+			$classes[] = 'wf-list-row--' . sanitize_html_class( $context );
+		}
+
+		return implode( ' ', $classes );
+	}
+}
