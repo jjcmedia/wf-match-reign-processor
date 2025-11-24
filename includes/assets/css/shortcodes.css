@@ -5,12 +5,9 @@
   - Contains fully-scoped superstar dashboard styles (.wf-superstar-record)
   - Designed to avoid style bleed: dashboard rules are strictly prefixed
   - Responsive, accessible, reduced-motion friendly
-  Version: 2025-11-23
+  Version: 2025-11-24 (updated)
 */
 
-/* ======================================================================
-   GLOBAL VARIABLES
-   ====================================================================== */
 :root{
   --wf-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --wf-font-size: 15px;
@@ -37,7 +34,6 @@
    unintentionally override table visuals.
    ====================================================================== */
 
-/* Top-level table wrapper */
 table.wfmc-table,
 .wfmc-table {
   width: 100%;
@@ -63,7 +59,6 @@ table.wfmc-table td,
   color: var(--wf-row-text);
 }
 
-/* Column helpers */
 .wfmc-col-date { width: 110px; padding-left: 0.8rem; white-space: nowrap; color: var(--wf-row-subtle); font-size: 0.95em; }
 .wfmc-col-promo { width: var(--wf-promo-w); text-align: center; padding-right: 0.6rem; }
 .wfmc-col-main { }
@@ -148,6 +143,8 @@ img.wf_match_event_image {
   border-radius: 6px;
   background: #111;
   border: 1px solid rgba(255,255,255,0.04);
+  object-fit: contain; /* ensure promo images are not cropped and are centered */
+  object-position: center;
 }
 
 /* Inline wrappers and participant styles */
@@ -328,18 +325,6 @@ img.wf_match_event_image {
   .wf-superstar-record .wf-recent-item { flex-direction: column; align-items:flex-start; gap:6px; }
 }
 
-/* ======================================================================
-   Helper: editor preview scope (GenerateBlocks / Gutenberg)
-   Enqueueing this file into the block editor will make the editor preview match.
-   ====================================================================== */
-
-/* Limit any editor-specific overrides under this scope so they don't leak to other admin pages */
-.editor-styles-wrapper .wf-superstar-record { /* no-op but keeps editor specificity available */ }
-
-/* ======================================================================
-   Accessibility & reduced motion
-   ====================================================================== */
-
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .wfmc-row:hover td,
@@ -357,34 +342,75 @@ img.wf_match_event_image {
   .wf-superstar-record .wf-pill__value { color: #fff; }
 }
 
-/* ======================================================================
-   Utility classes (small helpers that may be used in markup)
-   ====================================================================== */
+/* Utility classes */
 .wf-hidden { display:none !important; }
 .wf-muted { color: var(--wf-muted) !important; }
 .wf-accent { color: var(--wf-accent) !important; }
 
-/* Reign list styles (namespace separate from match-list to avoid accidental overwrite) */
-.wf-reign-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
-.wf-reign-row {
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
-  border-radius:8px;
-  padding:10px;
-  border:1px solid rgba(255,255,255,0.02);
+/* ======================================================================
+   REIGN ROWS (table-based) — ensure parity with match listing visuals
+   - Shortcode now outputs a wfmc-table with tr.wfmc-row rows.
+   - These rules ensure the championship thumbnails match the promo sizing
+     and the right-side stats match requested typography.
+   ====================================================================== */
+
+/* Ensure championship image matches match-listing promo sizing and behavior */
+.wf-champ-image,
+.wfmc-promo-img {
+  width: var(--wf-promo-w) !important;
+  height: var(--wf-promo-h) !important;
+  max-width: none !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.04);
+  object-fit: contain;            /* contain so image is not cropped and fits in box */
+  object-position: center;
 }
-.wf-reign-thumb { flex:0 0 auto; width:120px; height:80px; overflow:hidden; border-radius:6px; display:block; }
-.wf-reign-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-.wf-reign-main { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; }
-.wf-reign-meta { color:var(--wf-row-subtle); font-size:0.95rem; }
-.wf-reign-excerpt { color:var(--wf-row-subtle); font-size:0.92rem; margin-top:6px; }
 
-/* Responsive fallback */
-@media (max-width: 980px) {
-  .wf-reign-row { flex-direction:row; gap:10px; }
-  .wf-reign-thumb { width:100px; height:66px; }
+/* If the champ-image is wrapped, ensure wrapper matches promo sizing */
+.wf-reign-thumb { display:inline-block; width:var(--wf-promo-w); height:var(--wf-promo-h); overflow:hidden; border-radius:6px; }
+.wf-reign-thumb img { width:100%; height:100%; display:block; object-fit:contain; object-position:center; }
+
+/* Right-side stats: days number large, 'days' label smaller; defenses next to it */
+.wf-reign-side { display:flex; flex-direction:column; align-items:flex-end; min-width:140px; }
+.wf-reign-side-row { display:flex; gap:18px; align-items:center; justify-content:flex-end; }
+.wf-reign-side-item { text-align:right; }
+
+/* Days visual */
+.wf-days-number {
+  display:inline-block;
+  font-weight:900;
+  font-size:1.5rem; /* bigger number */
+  line-height:1;
+  color: #fff;
+}
+.wf-days-label { display:inline-block; font-size:0.85rem; color:var(--wf-row-subtle); margin-left:6px; text-transform:lowercase; }
+
+/* Defenses visual */
+.wf-defenses-number { display:inline-block; font-weight:800; font-size:1.0rem; color:#fff; }
+.wf-defenses-label { display:inline-block; font-size:0.85rem; color:var(--wf-row-subtle); margin-left:6px; text-transform:lowercase; }
+
+/* Ensure wfmc-col-side cell aligns vertical center and keeps spacing consistent */
+.wfmc-col-side { vertical-align: middle; padding: 0.85rem 1.0rem; }
+
+/* Small screens adjustments for promo/side sizing */
+@media (max-width:540px) {
+  .wfmc-col-promo { width:auto; padding-right:0.4rem; text-align:left; }
+  .wf-reign-thumb { width:80px; height:54px; }
+  .wf-days-number { font-size:1.2rem; }
+  .wf-reign-side-row { gap:10px; }
 }
 
-
+/* ======================================================================
+   NOTES:
+   - The shortcode should render rows inside <table class="wfmc-table"> with
+     each reign as <tr class="wfmc-row">. Put the championship image inside
+     the wfmc-col-promo cell using the wf-champ-image and wfmc-promo-img classes.
+   - Date range must be rendered as "YYYYMMDD - YYYYMMDD" (or "current") by the shortcode.
+   - Days number and 'days' label styled above (wf-days-number / wf-days-label).
+   - If theme-level rules still interfere, enqueue this stylesheet after the theme
+     or add a more specific selector (e.g. .wf-superstar-reigns .wfmc-table ...).
+   ====================================================================== */
